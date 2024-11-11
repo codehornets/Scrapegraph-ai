@@ -1,0 +1,1 @@
+ES_IGNORED_PATTERNS = []

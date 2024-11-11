@@ -1,0 +1,1 @@
+JA_IGNORED_PATTERNS = []

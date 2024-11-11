@@ -1,0 +1,17 @@
+pyYAML~=6.0.1
+importlib_metadata==6.11.0
+python-dotenv==1.0.1
+cryptography==43.0.1
+requests~=2.32.3
+requests_oauthlib~=2.0.0
+moto~=4.2.14
+oauthlib~=3.2.2
+PyJWT~=2.8.0
+stopwordsiso~=0.6.1
+pymupdf~=1.24.12
+spylls~=0.1.7
+pyspellchecker~=0.8.1
+validators~=0.34.0
+setuptools
+boto3
+botocore

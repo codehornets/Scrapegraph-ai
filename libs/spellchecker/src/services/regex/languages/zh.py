@@ -1,0 +1,1 @@
+ZH_IGNORED_PATTERNS = []
