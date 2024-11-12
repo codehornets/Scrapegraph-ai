@@ -15,15 +15,13 @@ dotenv.load_dotenv()
 
 
 class SerpService:
-    def __init__(
-        self, settings: SettingService = None, cache_service: CacheService = None
-    ):
-        self.settings = settings if settings else SettingService()
-        self.cache_service = (
-            cache_service if cache_service else CacheService(self.settings)
+    def __init__(self, settings: SettingService, cache_service: CacheService):
+        self.settings = settings
+        self.cache_service = cache_service
+        self.text_processor = TextProcessor(
+            settings=self.settings, cache_service=self.cache_service
         )
-        self.text_processor = TextProcessor(self.settings, self.cache_service)
-        self.classifier = IntentClassifier(self.settings)
+        self.classifier = IntentClassifier(settings=self.settings)
         self.text_processor.download_nltk_data()
 
     def analyze_search_intents(

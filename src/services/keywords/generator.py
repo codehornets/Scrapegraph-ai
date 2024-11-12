@@ -20,21 +20,23 @@ class KeywordGeneratorService:
     def __init__(
         self,
         settings: SettingService,
+        cache_service: CacheService,
         business_profile: Dict[str, Any] = None,
         marketing_goals: Dict[str, Any] = None,
     ):
+        self.competitor_keywords_limit = 2
         self.setting_service = settings
-        self.serp_service = SerpService(self.setting_service)
-        self.researcher = SeoKeywordResearch(api_key=os.getenv("SERP_API_KEY"))
-
-        # Load business profile and marketing goals
+        self.cache_service = cache_service
+        self.serp_service = SerpService(
+            settings=self.setting_service, cache_service=self.cache_service
+        )
+        self.researcher = SeoKeywordResearch(
+            settings=self.setting_service, api_key=os.getenv("SERP_API_KEY")
+        )
         self.business_profile = business_profile or self.load_business_profile()
         self.marketing_goals = marketing_goals or {
             "goals": ["awareness", "consideration"]
         }
-
-        self.competitor_keywords_limit = 2
-        self.cache_service = CacheService()
 
     def load_business_profile(self) -> Dict[str, Any]:
         profile_cache_path = "cache/business_profile.pkl"

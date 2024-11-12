@@ -122,7 +122,7 @@ class SpellcheckService:
                 ]
             )
 
-        self._finalize_output(matches)
+        self._finalize_output()
         return matches, total_words
 
     def _spellcheck_pdf(self):
@@ -137,7 +137,7 @@ class SpellcheckService:
                     f"Error processing page {page.number}: {e}", exc_info=True
                 )
                 continue
-        self._finalize_output(matches)
+        self._finalize_output()
         return matches, total_words
 
     def process_spellcheck_page(self, page: Page):
@@ -225,7 +225,5 @@ class SpellcheckService:
             return {"text": word, "language": self.language, "misspelled": []}
         return {"text": word, "language": self.language, "misspelled": [word]}
 
-    def _finalize_output(self, matches):
-        with open(self.settings.report_file_path, "w") as f:
-            json.dump(matches, f)
+    def _finalize_output(self):
         self.file_service.delete_directory(self.settings.cache_directory)

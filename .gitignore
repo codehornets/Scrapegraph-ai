@@ -42,3 +42,5 @@ lib/
 # extras
 cache/
 run_smart_scraper.py
+tmp/
+storage/

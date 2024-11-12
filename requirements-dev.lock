@@ -76,15 +76,17 @@ cffi==1.17.1
     # via cryptography
 charset-normalizer==3.3.2
     # via requests
-click==7.1.2
+click==8.1.7
     # via burr
     # via nltk
+    # via scrapegraphai
     # via streamlit
     # via typer
     # via uvicorn
 cloudpathlib==0.16.0
     # via weasel
 colorama==0.4.6
+    # via click
     # via loguru
     # via pylint
     # via pytest
@@ -527,6 +529,8 @@ pyparsing==3.1.2
     # via matplotlib
 pyreadline3==3.5.4
     # via humanfriendly
+pyspellchecker==0.8.1
+    # via scrapegraphai
 pystemmer==2.2.0.1
     # via fastembed
 pytest==8.0.0

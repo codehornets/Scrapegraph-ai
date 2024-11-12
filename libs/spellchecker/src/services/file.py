@@ -3,11 +3,7 @@ import json
 import os
 import shutil
 
-from libs.spellchecker.src.config.constants import (
-    CACHE_DIRECTORY,
-    PDF_LOCAL_DIRECTORY,
-    REPORT_DIRECTORY,
-)
+from libs.spellchecker.src.config.constants import CACHE_DIRECTORY
 from libs.spellchecker.src.config.settings import Settings
 
 
@@ -15,7 +11,8 @@ class FileService:
     def __init__(self, settings: Settings):
         self.settings = settings
 
-        for dir_path in [PDF_LOCAL_DIRECTORY, CACHE_DIRECTORY, REPORT_DIRECTORY]:
+        # for dir_path in [PDF_LOCAL_DIRECTORY, CACHE_DIRECTORY, REPORT_DIRECTORY]:
+        for dir_path in [CACHE_DIRECTORY]:
             os.makedirs(dir_path, exist_ok=True)
 
         for file_path in self.settings.cache_file_paths.values():

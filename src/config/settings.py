@@ -20,6 +20,7 @@ from .constants import (
     INTENT_TERMS,
     KEYWORD_STORAGE_DIR,
     MARKETING_STRATEGIES_FILE_PATH,
+    LEADS_STORAGE_DIR,
     OPENAI_API_KEY,
     KEYWORD_INTENTS,
     SEO_SUGGESTION_SERVICES,
@@ -34,14 +35,7 @@ dotenv.load_dotenv()
 
 os.makedirs(CACHE_DIR, exist_ok=True)
 os.makedirs(KEYWORD_STORAGE_DIR, exist_ok=True)
-os.makedirs(GOOGLE_MAPS_STORAGE_DIR, exist_ok=True)
-os.makedirs(SPACY_MODEL_CACHE_PATH, exist_ok=True)
-os.makedirs(STOP_WORDS_CACHE_PATH, exist_ok=True)
-os.makedirs(CLEAN_TEXT_CACHE_PATH, exist_ok=True)
-os.makedirs(SPELL_CHECK_CACHE_PATH, exist_ok=True)
-os.makedirs(TOKENIZE_CACHE_PATH, exist_ok=True)
-os.makedirs(TOPIC_CACHE_PATH, exist_ok=True)
-os.makedirs(BUSINESS_PROFILE_SUMMARY_CACHE_PATH, exist_ok=True)
+os.makedirs(LEADS_STORAGE_DIR, exist_ok=True)
 
 KEYWORD_PATH = os.path.join(KEYWORD_STORAGE_DIR, "keywords.pkl")
 GMAPS_STORAGE_PATH = os.path.join(GOOGLE_MAPS_STORAGE_DIR, "gmaps")
@@ -56,7 +50,6 @@ BUSINESS_PROFILE_SUMMARY_PATH = os.path.join(
 )
 
 
-# Define hook functions
 def log_kwargs(**kwargs):
     print(f"Function called with kwargs: {kwargs}")
 
@@ -81,12 +74,11 @@ class SettingService:
         self.intent_descriptions = INTENT_TERMS.values()
         self.intent_classifier_weights = (0.4, 0.4, 0.2)
         self.intent_classifier_threshold = 0.015
+        self.leads_storage_dir = LEADS_STORAGE_DIR + "/"
+        self.leads_responses_dir = LEADS_STORAGE_DIR + "/responses/"
+        self.leads_queries_dir = LEADS_STORAGE_DIR + "/queries/"
         self.gmaps_api_key = GOOGLE_MAPS_API_KEY
         self.gmaps_default_api_url = GOOGLE_MAPS_DEFAULT_API_URL
-        self.gmaps_storage_dir = GOOGLE_MAPS_STORAGE_DIR + "/"
-        self.gmaps_queries_dir = self.gmaps_storage_dir + "/queries/"
-        self.gmaps_responses_dir = self.gmaps_storage_dir + "/responses/"
-        self.gmaps_output_dir = self.gmaps_storage_dir + "/output/"
         self.gmaps_search_query_intent_modifiers = GMAPS_SEARCH_QUERY_INTENT_MODIFIERS
         self.intent_analysis_cache_path = self.cache_dir + "/intent_analysis"
         self.keyword_storage_dir = KEYWORD_STORAGE_DIR

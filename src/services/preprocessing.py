@@ -22,19 +22,14 @@ class TextProcessor:
     def __init__(
         self,
         settings: SettingService,
-        cache_service: CacheService = None,
+        cache_service: CacheService,
         language: str = "en",
     ):
-        if not cache_service:
-            cache_service = CacheService(settings)
-
         self.setting_service = settings
         self.cache_service = cache_service
         self.language = language
-
         self.spellchecker = SpellcheckService()
         self.lemmatizer = WordNetLemmatizer()
-
         self.stop_words = self._initialize_stop_words()
         self.nlp = self._load_spacy_model()
 

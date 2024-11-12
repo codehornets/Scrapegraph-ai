@@ -42,8 +42,8 @@ def create_output_directory_if_not_exists():
     global output_directory_created
     # Check if output directory exists, if not, create it
     if not output_directory_created:
-        create_directory_if_not_exists(setting_service.gmaps_output_dir)
-        create_directory_if_not_exists(setting_service.gmaps_responses_dir)
+        create_directory_if_not_exists(setting_service.leads_storage_dir)
+        create_directory_if_not_exists(setting_service.leads_responses_dir)
         output_directory_created = True
 
 

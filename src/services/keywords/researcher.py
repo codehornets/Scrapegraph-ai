@@ -13,25 +13,23 @@ dotenv.load_dotenv()
 class SeoKeywordResearch:
     def __init__(
         self,
+        settings: SettingService,
         api_key: str,
         query: str = None,
         lang: str = "en",
         country: str = "us",
         domain: str = "google.com",
-        settings_service: SettingService = SettingService(),
     ) -> None:
         if not api_key:
             raise ValueError("API key is required")
 
+        self.settings_service = settings
         self.query = query
         self.api_key = api_key
         self.lang = lang
         self.country = country
         self.domain = domain
         self.__related_questions_results = []
-        self.settings_service = (
-            settings_service if settings_service else SettingService()
-        )
 
     def process_query(
         self,

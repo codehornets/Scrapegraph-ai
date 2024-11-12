@@ -2,9 +2,10 @@ import traceback
 from typing import Any, Dict, List, Optional, Tuple
 from pydantic import BaseModel
 
-from src.services.scrapers.leads.api import Api, ApiException
+from src.db.repositories import store_leads
 from src.config.settings import SettingService
 from src.services.caches import CacheService
+from src.services.scrapers.leads.api import Api, ApiException
 from src.utils.debug import die
 
 
@@ -16,6 +17,7 @@ class GoogleMapsScraperService:
     def __init__(
         self,
         settings: SettingService,
+        cache_service: CacheService,
         marketing_strategy: str,
         locations: List[str],
         industry: str,
@@ -26,6 +28,7 @@ class GoogleMapsScraperService:
         api: Optional[Api] = None,
     ):
         self.setting_service = settings
+        self.cache_service = cache_service
         self.marketing_strategy = marketing_strategy
         self.base_city = locations[0]  # TODO: Extend for multiple locations
         self.industry = industry
@@ -33,9 +36,7 @@ class GoogleMapsScraperService:
         self.min_rating = min_rating
         self.max_reviews = max_reviews
         self.review_sort = review_sort
-
-        self.api = api if api else Api()
-        self.cache_service = CacheService(settings=self.setting_service)
+        self.api = api if api else Api(settings=self.setting_service)
 
     def generate_leads(
         self,
@@ -58,7 +59,7 @@ class GoogleMapsScraperService:
                 f"{keyword}_{intent}_{self.industry}_{self.base_city}_{self.marketing_strategy}"
             )
             queries = self.cache_service.load_from_cache(
-                cache_key, cache_dir=self.setting_service.gmaps_queries_dir
+                cache_key, cache_dir=self.setting_service.leads_queries_dir
             ) or self.gpt_generate_search_query(
                 keyword=keyword,
                 intent=intent,
@@ -66,7 +67,7 @@ class GoogleMapsScraperService:
             )
             self.cache_service.save_to_cache(
                 cache_key,
-                cache_dir=self.setting_service.gmaps_queries_dir,
+                cache_dir=self.setting_service.leads_queries_dir,
                 data=queries,
             )
 
@@ -76,25 +77,39 @@ class GoogleMapsScraperService:
 
             found_leads = []
             for query in validated_queries:
-                leads = self.search_places(
+                queries = self.search_places(
                     query=query,
                     max_results=max_results,
                     enable_reviews_extraction=enable_reviews_extraction,
                     zoom_level=zoom_level,
                 )
-                leads = leads["results"]
+                leads = queries["results"]
                 found_leads.extend(leads)
 
                 lead_with_metadata = {
-                    "lead_data": leads,
+                    "query": query,
                     "keyword": keyword,
                     "intent": intent,
                     "score": score,
-                    "query": query,
+                    "results": leads,
                 }
 
                 lead_tracking.append(lead_with_metadata)
                 all_leads.append(leads)
+
+                try:
+                    store_leads(
+                        query=query,
+                        keyword=keyword,
+                        intent=intent,
+                        score=score,
+                        scraper_name="google-maps-scraper",
+                        filename=queries.get("filename"),
+                        lead_data_list=leads,
+                    )
+                except Exception as e:
+                    die(f"Failed to store lead for query {query}: {e}")
+                    print(f"Failed to store lead for query {query}: {e}")
 
         return lead_tracking, all_leads
 
@@ -109,7 +124,7 @@ class GoogleMapsScraperService:
             f"{keyword}_{intent}_{self.industry}_{self.base_city}_{self.marketing_strategy}"
         )
         search_queries = self.cache_service.load_from_cache(
-            cache_key, cache_dir=self.setting_service.gmaps_queries_dir
+            cache_key, cache_dir=self.setting_service.leads_queries_dir
         )
 
         if search_queries:
@@ -148,7 +163,7 @@ class GoogleMapsScraperService:
 
             self.cache_service.save_to_cache(
                 cache_key,
-                cache_dir=self.setting_service.gmaps_queries_dir,
+                cache_dir=self.setting_service.leads_queries_dir,
                 data=search_queries,
             )
 
@@ -226,7 +241,7 @@ class GoogleMapsScraperService:
 
         # cache_key = self.cache_service.generate_cache_key(data)
         # cached_result = self.cache_service.load_from_cache(
-        #     cache_key, cache_dir=self.setting_service.gmaps_queries_dir
+        #     cache_key, cache_dir=self.setting_service.leads_queries_dir
         # )
         # if cached_result:
         #     print(f"Cache hit for query: {query}")
@@ -236,7 +251,7 @@ class GoogleMapsScraperService:
 
         # self.cache_service.save_to_cache(
         #     cache_key,
-        #     cache_dir=self.setting_service.gmaps_queries_dir,
+        #     cache_dir=self.setting_service.leads_queries_dir,
         #     data=result,
         # )
 
@@ -259,8 +274,6 @@ class GoogleMapsScraperService:
             )
             self.api.abort_task(task["id"])
             self.api.delete_task(task["id"])
-
-            # store_lead(query, scraper_name, results, filename)
 
             return {
                 "query": query,
@@ -289,6 +302,7 @@ class GoogleMapsScraperService:
 
 # scraper_service = GoogleMapsScraperService(
 #     settings=SettingService(),
+#     cache_service=CacheService(settings=SettingService()),
 #     marketing_strategy="general lead generation",
 #     locations=["us", "ca"],
 #     industry="consulting",

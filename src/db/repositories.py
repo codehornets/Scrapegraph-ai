@@ -5,7 +5,7 @@ from sqlalchemy import JSON, Column, Integer, String, Text, DateTime, func
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from typing import Dict, Any, Optional, Type
+from typing import Dict, Any, List, Optional, Type
 
 from src.models.business_profile import BusinessProfile
 from src.config.constants import DATABASE_URL
@@ -141,18 +141,28 @@ def store_business_profile(raw_data: Dict[str, Any]):
         logger.error("Validation Error: %s", e.json())
 
 
-def store_lead(query: str, scraper_name: str, results: Any, filename: Optional[str]):
-    """
-    Store task results in the database.
-    """
+def store_leads(
+    query: str,
+    keyword: str,
+    intent: str,
+    score: float,
+    scraper_name: str,
+    filename: Optional[str],
+    lead_data_list: List[Any],  # TODO: Accept any type for now to validate later
+) -> None:
     with SessionLocal() as db:
-        task_result = LeadSQL(
-            query=query,
-            scraper_name=scraper_name,
-            results=json.dumps(results),
-            filename=filename,
-        )
-        db.add(task_result)
+        lead = [
+            LeadSQL(
+                query=query,
+                keyword=keyword,
+                intent=intent,
+                score=score,
+                scraper_name=scraper_name,
+                filename=filename,
+                results=json.dumps(lead_data_list),
+            )
+        ]
+
+        db.bulk_save_objects(lead)
         db.commit()
-        db.refresh(task_result)
-        print(f"Stored Task Result with ID: {task_result.id}")
+        logger.info(f"Successfully stored {len(lead)} leads.")

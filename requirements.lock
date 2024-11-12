@@ -57,12 +57,14 @@ cffi==1.17.1
     # via cryptography
 charset-normalizer==3.3.2
     # via requests
-click==7.1.2
+click==8.1.7
     # via nltk
+    # via scrapegraphai
     # via typer
 cloudpathlib==0.16.0
     # via weasel
 colorama==0.4.6
+    # via click
     # via loguru
     # via tqdm
     # via wasabi
@@ -429,6 +431,8 @@ pyparsing==3.1.2
     # via httplib2
 pyreadline3==3.5.4
     # via humanfriendly
+pyspellchecker==0.8.1
+    # via scrapegraphai
 pystemmer==2.2.0.1
     # via fastembed
 python-dateutil==2.9.0.post0

@@ -94,10 +94,6 @@ PATTERNS_LIST = [
 
 PDF_LOCAL_DIRECTORY = os.getenv("PDF_LOCAL_DIRECTORY", f"{AWS_EFS_PATH}/pdfs")
 REPORT_DIRECTORY = os.getenv("REPORT_DIRECTORY", f"{AWS_EFS_PATH}/reports")
-REPORT_FILE_PATH = os.path.join(
-    REPORT_DIRECTORY,
-    f"spellcheck_{datetime.datetime.now().strftime('%Y%m%d%H%M%S')}.json",
-)
 S3_DICTIONARY_BASE_PATH = os.getenv(
     "S3_DICTIONARY_BASE_PATH", "/packages/spellchecker/storage/dictionaries/saved"
 )

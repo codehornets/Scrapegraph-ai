@@ -1,8 +1,9 @@
 import requests
-from requests.exceptions import ConnectionError
 from typing import Optional
+from requests.exceptions import ConnectionError
 
 from src.config.settings import SettingService
+
 from .utils import (
     get_filename_from_response_headers,
     write_json_response,
@@ -10,15 +11,13 @@ from .utils import (
     remove_after_first_slash,
 )
 
-setting_service = SettingService()
-
 
 class ApiException(Exception):
     pass
 
 
-def _create_filename(path):
-    return setting_service.gmaps_responses_dir + path + ".json"
+def _create_filename(path, setting_service: SettingService):
+    return setting_service.leads_storage_dir + path + ".json"
 
 
 def _raise_for_status(response):
@@ -35,7 +34,10 @@ def _raise_for_status(response):
 
 class Api:
     def __init__(
-        self, api_url: Optional[str] = None, create_response_files: bool = True
+        self,
+        settings: SettingService,
+        api_url: Optional[str] = None,
+        create_response_files: bool = True,
     ) -> None:
         """
         Initializes the API client with a specified server URL and an option to create response files.
@@ -44,6 +46,7 @@ class Api:
         :param create_response_files: Indicates if the client should create response files for each API call. This is useful for debugging or development purposes. Defaults to True.
         """
         DEFAULT_API_URL = "http://127.0.0.1:8000"
+        self.setting_service = settings
         self._api_url = (
             remove_after_first_slash(api_url) if api_url else DEFAULT_API_URL
         )
@@ -63,7 +66,7 @@ class Api:
         :param data: The data to be written to the file.
         """
         if self._create_response_files:
-            path = _create_filename(filename)
+            path = _create_filename(filename, self.setting_service)
             write_json_response(path, data)
             print(f"View {filename} response at: ./{path}")
 
@@ -196,7 +199,7 @@ api = Api('https://example.com')""".format(
 
             filename = f"get_tasks-page-{page}" if has_many_pages else "get_tasks"
             msg = f"get_tasks, page {page}" if has_many_pages else "get_tasks"
-            path = _create_filename(filename)
+            path = _create_filename(filename, self.setting_service)
             write_json_response(path, response_data)
 
             print(f"View {msg} response at: ./{path}")
@@ -261,7 +264,7 @@ api = Api('https://example.com')""".format(
                 if has_many_pages
                 else "get_task_results"
             )
-            path = _create_filename(filename)
+            path = _create_filename(filename, self.setting_service)
             write_json_response(path, response_data)
 
             print(f"View {msg} response at: ./{path}")
@@ -309,7 +312,7 @@ api = Api('https://example.com')""".format(
         filename = get_filename_from_response_headers(response)
         if self._create_response_files:
             path = write_file_response(
-                setting_service.gmaps_responses_dir, filename, content
+                self.setting_service.leads_responses_dir, filename, content
             )
             print(f"View downloaded file at: ./{path}")
         return content, filename

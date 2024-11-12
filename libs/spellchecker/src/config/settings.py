@@ -22,7 +22,6 @@ from libs.spellchecker.src.config.constants import (
     QUICKAUTH_CLIENT_ID,
     QUICKAUTH_CLIENT_SECRET,
     QUICKAUTH_URI,
-    REPORT_FILE_PATH,
     SPLYLLS_UNSUPPORTED_DICTIONARY_PATHS,
     SUPPORTED_LANGUAGES,
     SYMBOLS_TO_SKIP,
@@ -51,7 +50,6 @@ class Settings:
         self.quickauth_uri = QUICKAUTH_URI
         self.quickauth_client_id = QUICKAUTH_CLIENT_ID
         self.quickauth_client_secret = QUICKAUTH_CLIENT_SECRET
-        self.report_file_path = REPORT_FILE_PATH
         self.supported_languages = SUPPORTED_LANGUAGES
         self.symbols_to_skip = SYMBOLS_TO_SKIP
         self.spylls_unsupported_dictionary_paths = SPLYLLS_UNSUPPORTED_DICTIONARY_PATHS

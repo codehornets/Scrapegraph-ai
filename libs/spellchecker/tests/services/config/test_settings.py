@@ -38,8 +38,6 @@ def mock_constants():
     ), patch(
         "src.config.settings.QUICKAUTH_CLIENT_SECRET", "test_client_secret"
     ), patch(
-        "src.config.settings.REPORT_FILE_PATH", "/path/to/report"
-    ), patch(
         "src.config.settings.SUPPORTED_LANGUAGES", ["en", "fr"]
     ), patch(
         "src.config.settings.UNSUPPORTED_HUNSPELL_DICTIONARY", ["xx"]
@@ -74,6 +72,5 @@ def test_settings_initialization(mock_load_dotenv, mock_constants):
     assert settings.quickauth_uri == "https://test.auth/quick"
     assert settings.quickauth_client_id == "test_client_id"
     assert settings.quickauth_client_secret == "test_client_secret"
-    assert settings.report_file_path == "/path/to/report"
     assert settings.supported_languages == ["en", "fr"]
     assert settings.unsupported_hunspell_dictionary == ["xx"]

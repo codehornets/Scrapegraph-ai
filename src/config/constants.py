@@ -247,6 +247,8 @@ TOPIC_CACHE_PATH = os.path.join(os.getcwd(), "storage", "spacy", "topic")
 BUSINESS_PROFILE_SUMMARY_CACHE_PATH = os.path.join(
     os.getcwd(), "storage", "spacy", "business_profile_summary"
 )
+LEADS_STORAGE_DIR = os.path.join(os.getcwd(), "storage", "leads")
+LEADS_RESPONSES_DIR = os.path.join(os.getcwd(), "storage", "leads", "responses")
 
 GMAPS_SEARCH_QUERY_INTENT_MODIFIERS = {
     "informational": ["top-rated", "best", "recommended", "popular", "highly reviewed"],
