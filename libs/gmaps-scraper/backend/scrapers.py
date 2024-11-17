@@ -1,23 +1,35 @@
-from urllib.parse import urlparse
 import re
-from botasaurus_server.server import Server
-from src.gmaps import google_maps_scraper, website_contacts_scraper
 import random
-from botasaurus_server.ui import View, Field, ExpandDictField, ExpandListField, filters, sorts
-from botasaurus import cl
 import urllib.parse
+from urllib.parse import urlparse
+
+from src.gmaps import google_maps_scraper, website_contacts_scraper
+
+from .core import cl
+from .server.server import Server
+from .server.ui import (
+    View,
+    Field,
+    ExpandDictField,
+    ExpandListField,
+    filters,
+    sorts,
+)
 from .country import get_cities
 from .category import category_options
+
 
 def convert_to_string(input_str):
     return urllib.parse.unquote_plus(input_str).strip()
 
+
 def create_tasks_for_links(data, links):
     """Creates tasks specifically designed for handling links."""
     task = data.copy()
-    task['links'] = links  # Set the links property
-    task['query'] = "Links"  # Set a generic query indicating link processing
+    task["links"] = links  # Set the links property
+    task["query"] = "Links"  # Set a generic query indicating link processing
     return task
+
 
 def randomize_strings(string_list):
     """
@@ -31,13 +43,17 @@ def randomize_strings(string_list):
     """
     # Create a copy of the original list to avoid modifying it
     randomized_list = string_list.copy()
-    
+
     # Shuffle the list in-place using the random.shuffle() function
     random.shuffle(randomized_list)
-    
+
     return randomized_list
 
-def prepend_to_strings(strings_list, prepend_str, ):
+
+def prepend_to_strings(
+    strings_list,
+    prepend_str,
+):
     """
     Prepend a given string to each item in a list of strings.
     """
@@ -50,15 +66,17 @@ def clean_search_string(s):
     if isinstance(s, str):
         return re.sub(r"\s+", " ", s.strip().lower())
 
+
 def create_tasks_for_queries(data, queries):
     tasks = []
     # Create individual tasks
     for query in queries:
         task = data.copy()  # Shallow copy to preserve other settings
         task["query"] = clean_search_string(query)  # Assign the single query
-            # Delete the old "queries" property
+        # Delete the old "queries" property
         tasks.append(task)
     return tasks
+
 
 def split_by_gmaps_search_links(links):
     # Lists to hold the divided links
@@ -71,9 +89,9 @@ def split_by_gmaps_search_links(links):
         parsed_link = cl.extract_path_from_link(link)
 
         # Check if the path starts with '/maps/search'
-        if parsed_link.startswith('/maps/search'):
+        if parsed_link.startswith("/maps/search"):
             # Add to search queries list if true
-            x = convert_to_string(parsed_link.lstrip('/maps/search/').split('/')[0])
+            x = convert_to_string(parsed_link.lstrip("/maps/search/").split("/")[0])
             if x:
                 search_queries.append((x))
             elif "query_place_id" in link:
@@ -82,10 +100,16 @@ def split_by_gmaps_search_links(links):
             # Otherwise, add to in place links list
             in_place_links.append(link)
 
-    return in_place_links, search_queries 
+    return in_place_links, search_queries
+
 
 def filter_links(queries):
-    return [query for query in queries if query.startswith("http://") or query.startswith("https://")]
+    return [
+        query
+        for query in queries
+        if query.startswith("http://") or query.startswith("https://")
+    ]
+
 
 def split_and_create_tasks(data, queries):
     alllnks = filter_links(queries)
@@ -97,13 +121,13 @@ def split_and_create_tasks(data, queries):
         # Create tasks for non-link queries
     tasks = create_tasks_for_queries(data, search_queries)
 
-        # Create tasks for links 
+    # Create tasks for links
     if places_links:
         links_task = create_tasks_for_links(data, places_links)
         tasks.insert(0, links_task)
     return tasks
 
-    
+
 def split_task_by_query(data):
     """Splits a task dictionary into a list of tasks based on queries,
     optionally prepending city names if a country is specified.
@@ -115,23 +139,27 @@ def split_task_by_query(data):
             cities = randomize_strings(cities)
 
         if data["max_cities"]:
-            cities = cities[:data["max_cities"]]
+            cities = cities[: data["max_cities"]]
 
-        queries = prepend_to_strings(cities, data["business_type"], )
-        del data["queries"] # Avoid passing potentially big queries object
+        queries = prepend_to_strings(
+            cities,
+            data["business_type"],
+        )
+        del data["queries"]  # Avoid passing potentially big queries object
         return create_tasks_for_queries(data, queries)
     else:
         queries = data["queries"]  # Use queries directly
-        del data["queries"] # Avoid passing potentially big queries object
+        del data["queries"]  # Avoid passing potentially big queries object
         # Split queries into links and non-links
 
-        tasks = split_and_create_tasks(data, queries) 
+        tasks = split_and_create_tasks(data, queries)
 
-        return tasks 
-    
+        return tasks
+
 
 def get_task_name(data):
     return data["query"]
+
 
 featured_reviews_view = View(
     "Featured Reviews",
@@ -205,9 +233,16 @@ def competitors_to_string(data):
 
             # Formatting each competitor's information and adding it to the list
             formatted_strings.append(
-                "Name: " + name + "\n" +
-                "Link: " + link + "\n" +
-                "Reviews: " + str(reviews) + " reviews" + "\n"
+                "Name: "
+                + name
+                + "\n"
+                + "Link: "
+                + link
+                + "\n"
+                + "Reviews: "
+                + str(reviews)
+                + " reviews"
+                + "\n"
             )
 
         # Joining all formatted strings with a newline character
@@ -229,8 +264,12 @@ def join_closed_on(data, record):
 
 
 join_with_commas = lambda value, record: ", ".join(value or [])
+
+
 def show_if(input_data):
     return bool(input_data["api_key"])
+
+
 social_fields = [
     Field("emails", map=join_with_commas, show_if=show_if),
     Field("phones", map=join_with_commas, show_if=show_if),
@@ -292,34 +331,34 @@ best_customers = sorts.Sort(
         sorts.TrueFirstSort("website"),
         sorts.TruthyFirstSort(
             "linkedin",
-            ),
-            sorts.TrueFirstSort(
+        ),
+        sorts.TrueFirstSort(
             "is_spending_on_ads",
         ),
     ],
 )
 fls = [
-            filters.MinNumberInput("reviews", label="Min Reviews"),
-            filters.MaxNumberInput("reviews", label="Max Reviews"),
-            filters.BoolSelectDropdown("website", prioritize_no=True),
-            filters.IsTruthyCheckbox("phone"),
-            filters.IsTrueCheckbox("is_spending_on_ads"),
-            filters.BoolSelectDropdown("can_claim"),
-            filters.BoolSelectDropdown("is_temporarily_closed", label="Is Open", invert_filter=True),
-            filters.MultiSelectDropdown(
-                "categories",
-                label="Category In",
-                options=category_options,
-            ),
-            filters.MinNumberInput("rating", label="Min Rating"),
-
-        ]
+    filters.MinNumberInput("reviews", label="Min Reviews"),
+    filters.MaxNumberInput("reviews", label="Max Reviews"),
+    filters.BoolSelectDropdown("website", prioritize_no=True),
+    filters.IsTruthyCheckbox("phone"),
+    filters.IsTrueCheckbox("is_spending_on_ads"),
+    filters.BoolSelectDropdown("can_claim"),
+    filters.BoolSelectDropdown(
+        "is_temporarily_closed", label="Is Open", invert_filter=True
+    ),
+    filters.MultiSelectDropdown(
+        "categories",
+        label="Category In",
+        options=category_options,
+    ),
+    filters.MinNumberInput("rating", label="Min Rating"),
+]
 try:
-    
 
-    Server.add_scraper(   
+    Server.add_scraper(
         google_maps_scraper,
-        create_all_task=True, 
+        create_all_task=True,
         split_task=split_task_by_query,
         get_task_name=get_task_name,
         filters=fls,
@@ -334,12 +373,12 @@ try:
             featured_reviews_view,
             detailed_reviews_view,
         ],
-        remove_duplicates_by="place_id"
+        remove_duplicates_by="place_id",
     )
 except:
-    Server.add_scraper(   
+    Server.add_scraper(
         google_maps_scraper,
-        create_all_task=True, 
+        create_all_task=True,
         split_task=split_task_by_query,
         get_task_name=get_task_name,
         filters=fls,
@@ -355,13 +394,14 @@ except:
             detailed_reviews_view,
         ],
     )
+
 
 def process_domain(url):
     stripped_url = url[4:] if url.startswith("www.") else url
 
     # Split the url by "."
     parts = stripped_url.split(".")
-    
+
     # If there is only one "." in the url
     if len(parts) == 1:
         return stripped_url
@@ -370,12 +410,14 @@ def process_domain(url):
     else:
         # Remove the last TLD and join the remaining parts
         return ".".join(parts[:-1])
+
+
 def get_website_contacts_scraper_task_name(data):
     websites = data["websites"]
-    
+
     # Extract main domain info
     domains = [process_domain(urlparse(url).netloc) for url in websites]
-    
+
     if len(domains) == 1:
         return domains[0]
     elif len(domains) <= 2:
@@ -388,9 +430,18 @@ def get_website_contacts_scraper_task_name(data):
         n = len(domains) - 2
         return d1 + ", " + d2 + " and " + str(n) + " more"
 
+
 social_media_filters = [
-    "emails", "phones", "linkedin", "twitter", "facebook",
-    "youtube", "instagram", "github", "snapchat", "tiktok"
+    "emails",
+    "phones",
+    "linkedin",
+    "twitter",
+    "facebook",
+    "youtube",
+    "instagram",
+    "github",
+    "snapchat",
+    "tiktok",
 ]
 
 Server.add_scraper(
@@ -398,17 +449,20 @@ Server.add_scraper(
     get_task_name=get_website_contacts_scraper_task_name,
     filters=[
         filters.SearchTextInput("website"),
-        *[filters.BoolSelectDropdown(social_media) for social_media in social_media_filters]
+        *[
+            filters.BoolSelectDropdown(social_media)
+            for social_media in social_media_filters
+        ],
     ],
     sorts=[
         sorts.AlphabeticAscendingSort("website"),
         sorts.AlphabeticDescendingSort("website"),
     ],
 )
-Server.set_rate_limit(request=1,task=1)
+Server.set_rate_limit(request=1, task=1)
 Server.enable_cache()
 Server.configure(
-     title="Google Maps Scraper",
+    title="Google Maps Scraper",
     header_title="Made with Botasaurus",
     description="Find thousands of new customers personal phone, email and grow your business exponentially.",
     right_header={

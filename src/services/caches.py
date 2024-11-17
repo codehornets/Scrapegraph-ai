@@ -2,17 +2,11 @@ import hashlib
 import json
 import os
 import pickle
-import yaml
 import csv
 from typing import List, Dict, Any, Union
 
-from src.config.settings import SettingService
-
 
 class CacheService:
-    def __init__(self, settings: SettingService):
-        self.settings = settings
-
     @staticmethod
     def generate_cache_key(data: Dict[str, Any]) -> str:
         sorted_data_str = json.dumps(data, sort_keys=True)
@@ -152,8 +146,3 @@ class CacheService:
                 return f.read()
         else:
             raise ValueError(f"Unsupported cache format: {cache_format}")
-
-    def load_marketing_strategies(self) -> List[Dict[str, Any]]:
-        with open(self.settings.marketing_strategies_file_path, "r") as file:
-            strategies = yaml.safe_load(file)
-        return strategies["marketing_strategies"]

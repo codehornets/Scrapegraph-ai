@@ -4,8 +4,8 @@ import json, csv
 from typing import Any, Dict
 from itertools import zip_longest
 
-from src.services.serpapi.google_search import GoogleSearch
 from src.config.settings import SettingService
+from src.services.analytics.serpapi.google_search import GoogleSearch
 
 dotenv.load_dotenv()
 

@@ -1,14 +1,17 @@
-from botasaurus import bt
 import requests
 import traceback
-from datetime import datetime
+import regex as re
+import re as rex
 import time
 import math
 import urllib.parse
+from datetime import datetime
+
 from lxml import html
 from bs4 import BeautifulSoup, Tag
-import regex as re
-import re as rex
+
+from backend.core import bt
+
 from .time_utils import parse_relative_date
 
 default_request_interval = 0.2
@@ -23,10 +26,9 @@ sort_by_enum = {
 }
 
 
-
 review_default_result = {
-            "response_text_date":None,
-        "text_date":None,
+    "response_text_date": None,
+    "text_date": None,
     "translated_text": "",  # review text if exists
     "translated_response_text": "",  # review text if exists
     "token": "",  # pagination token
@@ -62,28 +64,28 @@ metadata_default = {
 }
 
 
-
 def extract_google_maps_contributor_url(input_url):
     # Define a regular expression pattern to match the desired URL
-    pattern = r'https://www\.google\.com/maps/contrib/\d+'
-    
+    pattern = r"https://www\.google\.com/maps/contrib/\d+"
+
     # Use re.search to find the first match in the input_url
     match = rex.search(pattern, input_url)
-    
+
     if match:
         # Extract the matched URL
         contributor_url = match.group(0)
-        
+
         # Add "/reviews?entry=ttu" to the end of the URL
-        contributor_url += '/reviews?entry=ttu'
-        
+        contributor_url += "/reviews?entry=ttu"
+
         return contributor_url
     else:
         return None
 
+
 def extract_reviews_and_photos(text):
     # Regular expression pattern to extract numbers that may represent reviews and photos
-    pattern = r'\d+'
+    pattern = r"\d+"
 
     # Find all matches of numbers in the text
     matches = re.findall(pattern, text)
@@ -101,6 +103,7 @@ def extract_reviews_and_photos(text):
     # Return the extracted numbers as a tuple
     return (num_reviews, num_photos)
 
+
 class GoogleMapsAPIScraper:
     def __init__(
         self,
@@ -108,7 +111,7 @@ class GoogleMapsAPIScraper:
         n_retries: int = default_n_retries,
         retry_time: float = default_retry_time,
     ):
-        
+
         self.request_interval = request_interval
         self.n_retries = n_retries
         self.retry_time = retry_time
@@ -158,13 +161,13 @@ class GoogleMapsAPIScraper:
         """Cut response text to remove css and js from extremities"""
         idx_first_div = text.find("<div")
         if idx_first_div == -1:
-            
+
             idx_first_div = 0
         match = re.search("</div", text, flags=re.REVERSE)
         if match:
             idx_last_div = match.span()[1] + 1
         else:
-            
+
             idx_last_div = -1
         text = text[idx_first_div:idx_last_div]
         return "<html><body>" + text + "</body></html>"
@@ -184,26 +187,29 @@ class GoogleMapsAPIScraper:
 
             # Iterando sobre texto de cada review
             # reviews_tree = tree.xpath('//*[contains(@class, "gws-localreviews__google-review")]')
-            
-            reviews_soup = response_soup.find_all(True, class_="gws-localreviews__google-review")
-            
+
+            reviews_soup = response_soup.find_all(
+                True, class_="gws-localreviews__google-review"
+            )
+
             # reviews_soup = [
             #     response_soup.find("div", dict(r.attrib)) for r in reviews_tree
             # ]
         except Exception as e:
             tb = re.sub(r"\s", " ", traceback.format_exc())  # Corrected
-            
+
             if next_token is None:
                 next_token = self._get_response_token(response_text)
-        
+
         return response_text, response_soup, reviews_soup, review_count, next_token
 
     def _get_response_token(self, response_text: str) -> str:
         """Searches for token in response text using regex, in case other methods fail"""
-        match = re.search(r'(data-next-page-token\s*=\s*")([\w=]*)', response_text)  # Corrected
+        match = re.search(
+            r'(data-next-page-token\s*=\s*")([\w=]*)', response_text
+        )  # Corrected
         if match:
             return match.groups()[1]
-        
 
     def _get_request(
         self,
@@ -250,14 +256,12 @@ class GoogleMapsAPIScraper:
             metadata["place_name"] = response.find(True, class_="P5Bobd").text
         except Exception as e:
             pass
-            
 
         # Parse address
         try:
             metadata["address"] = response.find(True, class_="T6pBCe").text
         except Exception as e:
-            pass    
-            
+            pass
 
         # Parse overall_rating
         try:
@@ -265,7 +269,6 @@ class GoogleMapsAPIScraper:
             metadata["overall_rating"] = float(rating_text)
         except Exception as e:
             pass
-            
 
         # Parse n_reviews
         try:
@@ -274,7 +277,6 @@ class GoogleMapsAPIScraper:
             metadata["n_reviews"] = int(n_reviews_text)
         except Exception as e:
             pass
-            
 
         # Parse topics
         try:
@@ -307,7 +309,7 @@ class GoogleMapsAPIScraper:
         # Error log
         tb = re.sub(r"\s", " ", traceback.format_exc())  # Corrected
         msg = f"review {name}: {tb}"
-        
+
         # Appending to line
         tb = re.sub("['\"]", " ", tb)
         result["errors"].append(tb)
@@ -322,12 +324,11 @@ class GoogleMapsAPIScraper:
         # Error log
         tb = re.sub(r"\s", " ", traceback.format_exc())  # Corrected
         msg = f"place {name} request {n}: {tb}"
-        
+
         # Saving file
         new_var = f"output/place_{name}_request_{n}_{self._ts()}.html"
         print(new_var)
         bt.write_html(str(response_text) + "\n\n" + msg, new_var)
-
 
     def _parse_review(self, review: Tag, hl) -> dict:
         result = review_default_result.copy()
@@ -350,7 +351,9 @@ class GoogleMapsAPIScraper:
             # Find text block
             translated_text = review.find_all(True, class_="review-full-text")
             if not translated_text:
-                translated_text = review.find_all(True, {"data-expandable-section": True})
+                translated_text = review.find_all(
+                    True, {"data-expandable-section": True}
+                )
             # Extract text
             # print(text_block)
             if len(translated_text) > 1:
@@ -400,7 +403,7 @@ class GoogleMapsAPIScraper:
                     True if user_node.find(True, class_="QV3IV") else False
                 )
                 fixed_text = user_node.text.replace(",", "").replace(".", "")
-                user_reviews,user_photos =  extract_reviews_and_photos(fixed_text)
+                user_reviews, user_photos = extract_reviews_and_photos(fixed_text)
                 result["user_reviews"] = user_reviews
                 result["user_photos"] = user_photos
 
@@ -444,7 +447,9 @@ class GoogleMapsAPIScraper:
         try:
             response = review.find_all(True, class_="d6SCIc")
             if response:
-                result["translated_response_text"] = self._parse_review_text(response[1])
+                result["translated_response_text"] = self._parse_review_text(
+                    response[1]
+                )
         except Exception as e:
             self._handle_review_exception(result, review, "response")
 
@@ -456,23 +461,27 @@ class GoogleMapsAPIScraper:
                 result["trip_type_travel_group"] = re.sub(r"\s+", " ", s)  # Corrected
         except Exception as e:
             self._handle_review_exception(result, review, "trip_type_travel_group")
-        
+
         if "en" in hl:
-            if result['relative_date']:
+            if result["relative_date"]:
                 try:
-                    result["text_date"]= parse_relative_date(result['relative_date'], result['retrieval_date'])
+                    result["text_date"] = parse_relative_date(
+                        result["relative_date"], result["retrieval_date"]
+                    )
                 except Exception as e:
                     print(traceback.format_exc())
                     result["text_date"] = None
 
-            if result['response_relative_date']:
+            if result["response_relative_date"]:
                 try:
-                    result["response_text_date"]= parse_relative_date(result['response_relative_date'], result['retrieval_date'])
+                    result["response_text_date"] = parse_relative_date(
+                        result["response_relative_date"], result["retrieval_date"]
+                    )
                 except Exception as e:
                     print(traceback.format_exc())
                     result["response_text_date"] = None
-        
-        if  result["user_url"]:
+
+        if result["user_url"]:
             result["user_url"] = extract_google_maps_contributor_url(result["user_url"])
 
         if not result["translated_text"]:
@@ -486,7 +495,6 @@ class GoogleMapsAPIScraper:
 
         if not result["user_photos"]:
             result["user_photos"] = None
-
 
         return result
 
@@ -502,7 +510,6 @@ class GoogleMapsAPIScraper:
         url_name = re.findall("(?<=place/).*?(?=/)", url)[0]
         url_name = urllib.parse.unquote_plus(url_name)
         self._reset_logger_filter(url_name)
-        
 
         feature_id = self._parse_url_to_feature_id(url)
         sort_by_id = self._parse_sort_by(sort_by)
@@ -512,7 +519,7 @@ class GoogleMapsAPIScraper:
 
         n_requests = math.ceil((n_reviews) / 10)
         for i in range(n_requests):
-            
+
             n = self.n_retries
             while n > 0:
                 next_token = None
@@ -531,7 +538,7 @@ class GoogleMapsAPIScraper:
                         sort_by_id=sort_by_id,
                         token=token,
                     )
-                    
+
                     assert isinstance(reviews_soup, list)
                     break
                 except Exception as e:
@@ -539,13 +546,13 @@ class GoogleMapsAPIScraper:
                     n -= 1
                     self._handle_place_exception(response_text, url_name, i)
                     if n == 0 and next_token is None:
-                        
+
                         raise e
                     elif n == 0:
-                        
+
                         break
                     else:
-                        
+
                         time.sleep(self.retry_time)
             token = next_token
             if n == 0:
@@ -554,28 +561,25 @@ class GoogleMapsAPIScraper:
             try:
                 # print("reviews_soup", len(reviews_soup))
                 for review in reviews_soup:
-                    # 
+                    #
                     result = self._parse_review(review, hl)
                     result["token"] = token
 
-
                     results.append(result)
-                    # 
+                    #
                     j += 1
             except Exception as e:
                 traceback.print_exc()
                 tb = re.sub(r"\s", " ", traceback.format_exc())
-                
 
             if review_count < 10 or token == "":
-                
+
                 break
 
             # Waiting so google wont block this scraper
             time.sleep(self.request_interval)
 
-        
-        if n_reviews is not None and n_reviews >=1 :
+        if n_reviews is not None and n_reviews >= 1:
             return results[:n_reviews]
         return results
 
@@ -591,11 +595,9 @@ class GoogleMapsAPIScraper:
         url_name = re.findall("(?<=place/).*?(?=/)", url)[0]
         url_name = urllib.parse.unquote_plus(url_name)
         self._reset_logger_filter(url_name)
-        
 
         feature_id = self._parse_url_to_feature_id(url)
 
-        
         _, response_soup, _, _, _ = self._get_request(
             feature_id,
             hl=hl,
@@ -610,10 +612,13 @@ class GoogleMapsAPIScraper:
 
         return metadata
 
+
 if __name__ == "__main__":
     try:
         with GoogleMapsAPIScraper() as scraper:
-            response_text, response_soup, reviews_soup, review_count, next_token = scraper._format_response_text(bt.read_html("fff"))
+            response_text, response_soup, reviews_soup, review_count, next_token = (
+                scraper._format_response_text(bt.read_html("fff"))
+            )
             rs = []
             # for review in reviews_soup[:1]:
             for review in reviews_soup:

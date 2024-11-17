@@ -1,6 +1,6 @@
 import pytest
 
-from src.services.preprocessing import remove_extra_characters
+from src.services.sanitizers import remove_extra_characters
 
 
 def test_remove_extra_characters():

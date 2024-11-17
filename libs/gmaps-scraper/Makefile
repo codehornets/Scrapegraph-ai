@@ -1,7 +1,6 @@
 install:
-	python -m venv .venv
-	source .venv/bin/activate
-	pip install -r requirements.txt
+	rye pin 3.12
+	rye sync
 
 run:
 	python -m run backend --force

@@ -1,0 +1,365 @@
+{
+    "Demographic-Based": [
+        {
+            "name": "Small Businesses",
+            "field": "description",
+            "operator": "contains",
+            "value": "small business",
+            "segment_name": "small_business",
+            "priority": 1
+        },
+        {
+            "name": "Mid-Sized Businesses",
+            "field": "description",
+            "operator": "contains",
+            "value": "mid-sized business",
+            "segment_name": "mid_sized_business",
+            "priority": 2
+        },
+        {
+            "name": "Enterprise Businesses",
+            "field": "description",
+            "operator": "contains",
+            "value": "enterprise",
+            "segment_name": "enterprise",
+            "priority": 3
+        },
+        {
+            "name": "Specific Industry",
+            "field": "categories",
+            "operator": "contains",
+            "value": "Consultant",
+            "segment_name": "consulting",
+            "priority": 4
+        }
+    ],
+    "Geographic": [
+        {
+            "name": "Local Businesses",
+            "field": "detailed_address.city",
+            "operator": "==",
+            "value": "San Francisco",
+            "segment_name": "local",
+            "priority": 1
+        },
+        {
+            "name": "Regional Businesses",
+            "field": "detailed_address.state",
+            "operator": "==",
+            "value": "California",
+            "segment_name": "regional",
+            "priority": 2
+        },
+        {
+            "name": "Businesses in Specific Country",
+            "field": "detailed_address.country_code",
+            "operator": "==",
+            "value": "US",
+            "segment_name": "national",
+            "priority": 3
+        }
+    ],
+    "Intent-Based": [
+        {
+            "name": "Informational Search Intent",
+            "field": "intent",
+            "operator": "==",
+            "value": "informational",
+            "segment_name": "informational",
+            "priority": 1,
+            "sub_segments": [
+                {
+                    "name": "Researching",
+                    "field": "intent",
+                    "operator": "==",
+                    "value": "researching",
+                    "segment_name": "researching",
+                    "priority": 1,
+                    "conditions": {
+                        "query_contains": [
+                            "how",
+                            "what",
+                            "guide",
+                            "overview"
+                        ],
+                        "intent": "Informational"
+                    }
+                },
+                {
+                    "name": "Evaluating",
+                    "field": "intent",
+                    "operator": "==",
+                    "value": "evaluating",
+                    "segment_name": "evaluating",
+                    "priority": 2,
+                    "conditions": {
+                        "query_contains": [
+                            "compare",
+                            "best",
+                            "alternatives"
+                        ],
+                        "intent": "Informational"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Transactional Search Intent",
+            "field": "intent",
+            "operator": "==",
+            "value": "transactional",
+            "segment_name": "transactional",
+            "priority": 2
+        },
+        {
+            "name": "SEO Optimized Leads",
+            "field": "seo_score",
+            "operator": ">",
+            "value": 80,
+            "segment_name": "seo_optimized",
+            "priority": 3
+        }
+    ],
+    "Engagement-Based": [
+        {
+            "name": "Active on Social Media",
+            "field": "social_media_activity",
+            "operator": ">",
+            "value": 50,
+            "segment_name": "socially_active",
+            "priority": 1
+        },
+        {
+            "name": "Businesses Responding to Reviews",
+            "field": "featured_reviews",
+            "operator": "not_empty",
+            "value": null,
+            "segment_name": "responsive_businesses",
+            "priority": 2
+        },
+        {
+            "name": "Website Visitors",
+            "field": "website_activity",
+            "operator": ">",
+            "value": 100,
+            "segment_name": "active_website",
+            "priority": 3
+        }
+    ],
+    "Revenue Potential": [
+        {
+            "name": "High Revenue Businesses",
+            "field": "description",
+            "operator": "contains",
+            "value": "global",
+            "segment_name": "high_revenue",
+            "priority": 1
+        },
+        {
+            "name": "Small Revenue Potential",
+            "field": "is_spending_on_ads",
+            "operator": "==",
+            "value": false,
+            "segment_name": "low_revenue",
+            "priority": 2
+        }
+    ],
+    "Competition Level": [
+        {
+            "name": "Direct Competitors",
+            "field": "competitors",
+            "operator": "not_empty",
+            "value": null,
+            "segment_name": "direct_competitors",
+            "priority": 1
+        },
+        {
+            "name": "Low Rated Competitors",
+            "field": "competitors.rating",
+            "operator": "<",
+            "value": 3.0,
+            "segment_name": "weak_competitors",
+            "priority": 2
+        }
+    ],
+    "Pain Point or Need-Based": [
+        {
+            "name": "SEO Visibility Needed",
+            "field": "review_keywords",
+            "operator": "contains",
+            "value": "SEO",
+            "segment_name": "seo_needs",
+            "priority": 1
+        },
+        {
+            "name": "Need for Walk-In Customers",
+            "field": "description",
+            "operator": "contains",
+            "value": "walk-in customers",
+            "segment_name": "walk_in_customers",
+            "priority": 1
+        }
+    ],
+    "Lifecycle Stage": [
+        {
+            "name": "Newly Established Businesses",
+            "field": "description",
+            "operator": "contains",
+            "value": "new",
+            "segment_name": "new_business",
+            "priority": 1
+        },
+        {
+            "name": "Mature Businesses",
+            "field": "description",
+            "operator": "contains",
+            "value": "established",
+            "segment_name": "mature_business",
+            "priority": 2
+        }
+    ],
+    "Technology Readiness": [
+        {
+            "name": "No Website",
+            "field": "website",
+            "operator": "==",
+            "value": null,
+            "segment_name": "no_website",
+            "priority": 1
+        },
+        {
+            "name": "High Digital Presence",
+            "field": "rating",
+            "operator": ">",
+            "value": 4.5,
+            "segment_name": "tech_ready",
+            "priority": 2
+        }
+    ],
+    "Lead Source": [
+        {
+            "name": "Found on Google Maps",
+            "field": "source",
+            "operator": "==",
+            "value": "Google Maps",
+            "segment_name": "google_maps",
+            "priority": 1
+        },
+        {
+            "name": "Found via Social Media",
+            "field": "source",
+            "operator": "==",
+            "value": "Social Media",
+            "segment_name": "social_media",
+            "priority": 2
+        }
+    ],
+    "Business Type or Industry": [
+        {
+            "name": "Software Companies",
+            "field": "main_category",
+            "operator": "==",
+            "value": "Software Company",
+            "segment_name": "software_companies",
+            "priority": 1
+        },
+        {
+            "name": "Consultants",
+            "field": "main_category",
+            "operator": "==",
+            "value": "Consultant",
+            "segment_name": "consultants",
+            "priority": 2
+        }
+    ],
+    "Business Size and Revenue Potential": [
+        {
+            "name": "Small Businesses",
+            "field": "description",
+            "operator": "contains",
+            "value": "small business",
+            "segment_name": "small_business",
+            "priority": 1
+        },
+        {
+            "name": "Large Enterprises",
+            "field": "competitors",
+            "operator": "not_empty",
+            "value": null,
+            "segment_name": "large_enterprises",
+            "priority": 2
+        }
+    ],
+    "Digital Presence": [
+        {
+            "name": "Has Website",
+            "field": "website",
+            "operator": "not_empty",
+            "value": null,
+            "segment_name": "has_website",
+            "priority": 1
+        },
+        {
+            "name": "High Review Count",
+            "field": "reviews",
+            "operator": ">",
+            "value": 50,
+            "segment_name": "high_reviews",
+            "priority": 2
+        }
+    ],
+    "Operating Hours": [
+        {
+            "name": "Open Weekdays",
+            "field": "workday_timing",
+            "operator": "contains",
+            "value": "9 a.m. – 5 p.m.",
+            "segment_name": "weekday_open",
+            "priority": 1
+        },
+        {
+            "name": "Closed Weekends",
+            "field": "closed_on",
+            "operator": "contains",
+            "value": "Saturday",
+            "segment_name": "weekend_closed",
+            "priority": 2
+        }
+    ],
+    "Unique Attributes": [
+        {
+            "name": "Women-Owned Businesses",
+            "field": "about.options",
+            "operator": "contains",
+            "value": "Identifies as women-owned",
+            "segment_name": "women_owned",
+            "priority": 1
+        },
+        {
+            "name": "Wheelchair Accessible",
+            "field": "about.options",
+            "operator": "contains",
+            "value": "Wheelchair-accessible entrance",
+            "segment_name": "wheelchair_accessible",
+            "priority": 2
+        }
+    ],
+    "Competitor Analysis": [
+        {
+            "name": "Competes with Zendesk",
+            "field": "competitors.name",
+            "operator": "contains",
+            "value": "Zendesk",
+            "segment_name": "competes_with_zendesk",
+            "priority": 1
+        },
+        {
+            "name": "Low Rated Competitors",
+            "field": "competitors.rating",
+            "operator": "<",
+            "value": 3.0,
+            "segment_name": "low_rated_competitors",
+            "priority": 2
+        }
+    ]
+}

@@ -19,8 +19,12 @@ class IntentClassification(BaseModel):
 
 
 class IntentClassifier:
-    def __init__(self, settings: SettingService):
+    def __init__(
+        self, settings: SettingService, cache_service: CacheService
+    ):
         self.setting_service = settings
+        self.cache_service = cache_service
+        
         self.ust_model = SentenceTransformer("all-MiniLM-L6-v2")
         self.keybert_model = KeyBERT("all-MiniLM-L6-v2")
         self.vectorizer = CountVectorizer(stop_words="english")
@@ -30,7 +34,6 @@ class IntentClassifier:
         self.intent_categories = [
             entry["intent"] for entry in self.setting_service.keyword_intents
         ]
-        self.cache_service = CacheService(settings=self.setting_service)
 
     def analyze_intent(self, query: str):
         search_intent = self.gpt_analyze_intent(query)

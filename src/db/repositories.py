@@ -7,9 +7,11 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from typing import Dict, Any, List, Optional, Type
 
+from termcolor import colored
+
+from src.models.lead import Lead
 from src.models.business_profile import BusinessProfile
 from src.config.constants import DATABASE_URL
-from src.models.lead import Lead
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
@@ -135,10 +137,12 @@ def store_business_profile(raw_data: Dict[str, Any]):
             db.commit()
             db.refresh(db_profile)
 
-            print(f"Stored Business Profile with ID: {db_profile.id}")
+            print(
+                colored(f"\nStored Business Profile with ID: {db_profile.id}", "green")
+            )
 
     except ValidationError as e:
-        logger.error("Validation Error: %s", e.json())
+        print(colored(f"\nValidation Error: {e.json()}", "red"))
 
 
 def store_leads(
@@ -148,21 +152,26 @@ def store_leads(
     score: float,
     scraper_name: str,
     filename: Optional[str],
-    lead_data_list: List[Any],  # TODO: Accept any type for now to validate later
+    task_results: List[Any],  # TODO: Accept any type for now to validate later
+    segmented_leads: List[Dict[str, Any]],
 ) -> None:
-    with SessionLocal() as db:
-        lead = [
-            LeadSQL(
-                query=query,
-                keyword=keyword,
-                intent=intent,
-                score=score,
-                scraper_name=scraper_name,
-                filename=filename,
-                results=json.dumps(lead_data_list),
-            )
-        ]
+    try:
+        with SessionLocal() as db:
+            lead = [
+                LeadSQL(
+                    query=query,
+                    keyword=keyword,
+                    intent=intent,
+                    score=score,
+                    scraper_name=scraper_name,
+                    filename=filename,
+                    results=json.dumps(task_results),
+                    segmented_leads=json.dumps(segmented_leads),
+                )
+            ]
 
-        db.bulk_save_objects(lead)
-        db.commit()
-        logger.info(f"Successfully stored {len(lead)} leads.")
+            db.bulk_save_objects(lead)
+            db.commit()
+            print(colored(f"\nSuccessfully stored {len(lead)} leads.", "green"))
+    except Exception as e:
+        print(colored(f"\nError storing leads: {e}", "red"))

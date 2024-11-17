@@ -16,25 +16,18 @@ anyio==4.6.2.post1
     # via httpx
 beautifulsoup4==4.12.3
     # via bs4
-botasaurus-server==4.0.60
-    # via gmaps-scraper
 bottle==0.13.2
-    # via botasaurus-server
     # via gmaps-scraper
 brotli==1.1.0
     # via geventhttpclient
 bs4==0.0.2
     # via gmaps-scraper
-cachetools==5.5.0
-    # via google-auth
 casefy==0.1.7
-    # via botasaurus-server
     # via gmaps-scraper
 certifi==2024.8.30
     # via geventhttpclient
     # via httpcore
     # via httpx
-    # via kubernetes
     # via requests
 cffi==1.17.1
     # via gevent
@@ -44,15 +37,11 @@ dateutils==0.6.12
     # via gmaps-scraper
 deprecated==1.2.14
     # via gmaps-scraper
-durationpy==0.9
-    # via kubernetes
 gevent==24.11.1
     # via geventhttpclient
     # via websocket
 geventhttpclient==2.3.1
     # via gmaps-scraper
-google-auth==2.36.0
-    # via kubernetes
 greenlet==3.1.1
     # via gevent
     # via sqlalchemy
@@ -71,27 +60,16 @@ javascript-fixes==1.1.29
     # via gmaps-scraper
 joblib==1.4.2
     # via gmaps-scraper
-kubernetes==31.0.0
-    # via botasaurus-server
 lxml==5.3.0
     # via gmaps-scraper
 ndjson==0.3.1
-    # via botasaurus-server
     # via gmaps-scraper
-oauthlib==3.2.2
-    # via kubernetes
-    # via requests-oauthlib
 psutil==6.1.0
     # via gmaps-scraper
 psycopg2==2.9.10
     # via gmaps-scraper
 psycopg2-binary==2.9.10
     # via gmaps-scraper
-pyasn1==0.6.1
-    # via pyasn1-modules
-    # via rsa
-pyasn1-modules==0.4.1
-    # via google-auth
 pycparser==2.22
     # via cffi
 pydantic==2.9.2
@@ -100,28 +78,18 @@ pydantic-core==2.23.4
     # via pydantic
 python-dateutil==2.9.0.post0
     # via dateutils
-    # via kubernetes
 python-dotenv==1.0.1
     # via gmaps-scraper
 pytz==2024.2
     # via dateutils
-pyyaml==6.0.2
-    # via kubernetes
 regex==2024.11.6
     # via gmaps-scraper
 requests==2.32.3
     # via gmaps-scraper
-    # via kubernetes
-    # via requests-oauthlib
-requests-oauthlib==2.0.0
-    # via kubernetes
-rsa==4.9
-    # via google-auth
 setuptools==75.4.0
     # via zope-event
     # via zope-interface
 six==1.16.0
-    # via kubernetes
     # via python-dateutil
 sniffio==1.3.1
     # via anyio
@@ -129,7 +97,6 @@ sniffio==1.3.1
 soupsieve==2.6
     # via beautifulsoup4
 sqlalchemy==2.0.36
-    # via botasaurus-server
     # via gmaps-scraper
 termcolor==2.5.0
     # via gmaps-scraper
@@ -140,21 +107,17 @@ typing-extensions==4.12.2
     # via pydantic-core
     # via sqlalchemy
 unidecode==1.3.8
-    # via botasaurus-server
     # via gmaps-scraper
 urllib3==2.2.3
     # via geventhttpclient
-    # via kubernetes
     # via requests
 websocket==0.2.1
     # via gmaps-scraper
 websocket-client==1.8.0
     # via gmaps-scraper
-    # via kubernetes
 wrapt==1.16.0
     # via deprecated
 xlsxwriter==3.2.0
-    # via botasaurus-server
     # via gmaps-scraper
 zope-event==5.0
     # via gevent

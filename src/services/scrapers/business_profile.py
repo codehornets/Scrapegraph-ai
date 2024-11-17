@@ -9,7 +9,7 @@ from requests.exceptions import RequestException
 from scrapegraphai.graphs.smart_scraper_multi_graph import SmartScraperMultiGraph
 from src.config.settings import SettingService
 from src.prompts.extract_business_profile_prompt import DEFAULT_SCRAPING_PROMPT
-from src.utils.parser import business_profile_parser
+from src.utils.parsers import business_profile_parser
 from src.db.seeders.business_profile_seeder import get_product_hunt_business_profile
 from src.config.constants import FOOTER_CLASSES, NAVBAR_CLASSES
 from src.utils.user_agents import UserAgentRotator, get_random_proxy, get_user_agents
@@ -19,23 +19,23 @@ dotenv.load_dotenv()
 app_env = os.getenv("APP_ENV", "development")
 
 
-class BusinessProfileScraperService:
+class BusinessProfileService:
     def __init__(
         self,
-        settings: SettingService,
+        setting_service: SettingService,
         source: List[str],
-        request_email: str,
+        email: str,
         prompt: str = DEFAULT_SCRAPING_PROMPT,
     ):
-        self.setting_service = settings
+        self.setting_service = setting_service
         self.website_url = source[0]
         self.linkedin_url = source[1] if len(source) > 1 else None
         self.prompt = prompt
-        self.request_email = request_email
+        self.email = email
 
         self.user_agent_rotator = UserAgentRotator(get_user_agents())
 
-    def extract_business_profile(self) -> Optional[Dict[str, Any]]:
+    def generate_profile(self) -> Optional[Dict[str, Any]]:
         """Extracts business profile data based on the app environment."""
         try:
             if app_env == "production":
@@ -47,15 +47,12 @@ class BusinessProfileScraperService:
                 data = scraper.run()
             else:
                 data = get_product_hunt_business_profile()
-
             if data and isinstance(data, list):
                 data = data[0]
-
             if data:
-                data.update({"request_email": self.request_email})
+                data.update({"request_email": self.email})
                 return self.enrich_business_profile_data(data)
             return None
-
         except Exception as e:
             print(f"Error extracting business profile: {e}")
             return None

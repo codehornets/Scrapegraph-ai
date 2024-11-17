@@ -1,0 +1,419 @@
+{
+    "Awareness": {
+        "step": 1,
+        "description": "Make more people aware of your business, product, or brand.",
+        "kpis": [
+            "Impressions",
+            "Website traffic",
+            "Social media reach"
+        ],
+        "rules": {
+            "reviews": 0,
+            "rating": 0,
+            "is_spending_on_ads": false
+        },
+        "strategies": [
+            {
+                "type": "Geographically Targeted Email Campaigns",
+                "description": "Sending highly localized email campaigns based on the physical location of the business.",
+                "example": "We are your local partner for [service], just around the corner in [city]."
+            },
+            {
+                "type": "Local Search Engine Optimization (SEO) Outreach",
+                "description": "Promoting the visibility of a business in local search results and business directories.",
+                "example": "We can help you rank higher in local searches on Google Maps."
+            },
+            {
+                "type": "Seasonal and Holiday Campaigns",
+                "description": "Leveraging local events or holidays to drive awareness.",
+                "example": "Launch a Black Friday sale to boost revenue and customer acquisition."
+            },
+            {
+                "type": "Event Invitation and Sponsorship Campaigns",
+                "description": "Promoting local business networking events or webinars.",
+                "example": "Join us for a local business networking event in [city]."
+            }
+        ],
+        "questions": [
+            "Who is our ideal audience, and where do they spend their time?",
+            "What channels are best for reaching our target audience?",
+            "What’s our unique selling proposition (USP) that should stand out?",
+            "How many people should we aim to reach?",
+            "Are there specific events or trends we can leverage?"
+        ],
+        "examples": [
+            "Increase website traffic by 50% in the next 3 months.",
+            "Reach 100,000 impressions on social media within 2 months.",
+            "Grow brand mentions by 25% through influencer partnerships."
+        ]
+    },
+    "Consideration": {
+        "step": 2,
+        "description": "Engage potential customers and encourage them to learn more.",
+        "kpis": [
+            "Email sign-ups",
+            "Time on site",
+            "Product demo requests"
+        ],
+        "rules": {
+            "reviews": {
+                "$gt": 0
+            },
+            "rating": {
+                "$lt": 4.0
+            }
+        },
+        "strategies": [
+            {
+                "type": "Lead Nurturing Campaigns",
+                "description": "Ongoing, automated email sequences designed to nurture leads through educational content.",
+                "example": "Download our latest e-book on how small businesses in [city] can grow through digital marketing."
+            },
+            {
+                "type": "Content-Driven Drip Campaigns",
+                "description": "A sequence of emails that deliver valuable content over time to keep the business engaged.",
+                "example": "Here’s your monthly digital marketing tip for [industry]."
+            },
+            {
+                "type": "Educational Webinar Invitations",
+                "description": "Hosting webinars that educate local businesses on relevant industry trends or challenges.",
+                "example": "Join our free webinar on boosting local SEO for small businesses."
+            },
+            {
+                "type": "Testimonial-Based Outreach",
+                "description": "Using social proof by sharing success stories or testimonials from local businesses in email campaigns.",
+                "example": "See how [local business] used our services to increase their local customer base by 30%."
+            }
+        ],
+        "questions": [
+            "What pain points are we solving for our audience?",
+            "How can we educate prospects about our product’s benefits?",
+            "What content formats (blogs, videos, webinars) will best address their needs?",
+            "How will we demonstrate credibility (e.g., case studies, testimonials)?",
+            "What’s the next step we want prospects to take?"
+        ],
+        "examples": [
+            "Increase email sign-ups by 30% using educational lead magnets.",
+            "Achieve a 20% growth in webinar registrations within 6 months.",
+            "Improve product demo requests by 15% through retargeting ads."
+        ]
+    },
+    "Conversion": {
+        "step": 3,
+        "description": "Drive specific actions like purchases, sign-ups, or bookings.",
+        "kpis": [
+            "Conversion rate",
+            "Sales",
+            "New customer acquisition"
+        ],
+        "rules": {
+            "rating": {
+                "$gte": 4.0
+            },
+            "is_spending_on_ads": false
+        },
+        "strategies": [
+            {
+                "type": "Cold Email Outreach for Lead Generation",
+                "description": "Sending introductory emails to businesses that haven't previously interacted with your brand.",
+                "example": "We’ve helped businesses like yours in [location] improve their local presence—can we schedule a call?"
+            },
+            {
+                "type": "Exclusive Offers and Discounts",
+                "description": "Providing exclusive discounts or promotions tailored to the local business community.",
+                "example": "Get 20% off our digital marketing services for businesses in [city]!"
+            },
+            {
+                "type": "Upselling or Cross-Selling Campaigns",
+                "description": "Targeting existing or previous customers with additional services or upgraded packages.",
+                "example": "As a valued customer, we’d like to offer you an exclusive deal on our advanced local SEO package."
+            },
+            {
+                "type": "Competitor Comparison Campaigns",
+                "description": "Highlighting the benefits of your service compared to local competitors to attract new clients.",
+                "example": "Switch from [competitor] and see how our personalized service can drive better results for your business."
+            }
+        ],
+        "questions": [
+            "What specific actions do we want customers to take?",
+            "Are there barriers in the customer journey preventing conversions?",
+            "What offers or incentives can encourage immediate action?",
+            "How can we reduce cart abandonment rates?",
+            "What is a realistic conversion rate for our business?"
+        ],
+        "examples": [
+            "Achieve a 10% increase in sales from paid ads in the next quarter.",
+            "Boost landing page conversions to 20% by optimizing CTAs.",
+            "Generate 1,000 new subscriptions through a limited-time discount."
+        ]
+    },
+    "Retention": {
+        "step": 4,
+        "description": "Keep existing customers engaged and loyal.",
+        "kpis": [
+            "Churn rate",
+            "Repeat purchases",
+            "Customer lifetime value"
+        ],
+        "rules": {
+            "reviews": {
+                "$gte": 1000
+            }
+        },
+        "strategies": [
+            {
+                "type": "Loyalty and Retention Programs",
+                "description": "Rewarding businesses that engage with your services frequently or refer other companies.",
+                "example": "Join our loyalty program—get exclusive discounts after every five purchases with us."
+            },
+            {
+                "type": "Customer Re-Engagement Campaigns",
+                "description": "Targeting businesses that haven't responded or interacted for a while to rekindle their interest.",
+                "example": "We noticed you haven’t tried our latest services—here’s a special offer just for you."
+            },
+            {
+                "type": "Feedback and Surveys for Continuous Improvement",
+                "description": "Gathering feedback from customers to improve services and foster deeper connections.",
+                "example": "How can we improve? Share your thoughts in our quick survey, and help us serve local businesses better."
+            }
+        ],
+        "questions": [
+            "What drives customer satisfaction for our business?",
+            "What common issues lead to churn, and how can we address them?",
+            "How can we re-engage inactive customers?",
+            "What additional value can we provide to increase loyalty?",
+            "Are there opportunities for recurring purchases or subscriptions?"
+        ],
+        "examples": [
+            "Reduce customer churn by 10% in 6 months through better onboarding.",
+            "Increase repeat purchases by 15% using email reminders.",
+            "Boost Net Promoter Score (NPS) to 8+ by improving customer support."
+        ]
+    },
+    "Advocacy": {
+        "step": 5,
+        "description": "Turn customers into brand ambassadors who promote your business.",
+        "kpis": [
+            "Referrals",
+            "Reviews",
+            "User-generated content"
+        ],
+        "rules": {
+            "reviews": {
+                "$gte": 10
+            },
+            "rating": {
+                "$gte": 4.5
+            }
+        },
+        "strategies": [
+            {
+                "type": "Testimonial-Based Outreach",
+                "description": "Using social proof by sharing success stories or testimonials from local businesses in email campaigns.",
+                "example": "See how [local business] used our services to increase their local customer base by 30%."
+            },
+            {
+                "type": "Referral Program Emails",
+                "description": "Encouraging clients to refer others in their network by offering incentives.",
+                "example": "Refer a business in your area and get a 15% discount on your next purchase."
+            },
+            {
+                "type": "Cross-Promotional Campaigns",
+                "description": "Partnering with other local businesses to cross-promote services to each other's clients.",
+                "example": "Partner with us to co-promote our services and grow your network in [location]."
+            }
+        ],
+        "questions": [
+            "How can we encourage customers to leave reviews or testimonials?",
+            "What incentives can we provide for referrals?",
+            "How can we engage satisfied customers to share their experiences?",
+            "What content or programs can inspire customers to promote us?"
+        ],
+        "examples": [
+            "Get 50 new customer reviews on Google within 3 months.",
+            "Launch a referral program to acquire 100 new customers in Q1.",
+            "Increase user-generated content (UGC) mentions by 25% on Instagram."
+        ]
+    },
+    "Product-Specific": {
+        "step": 6,
+        "description": "Align marketing with the product’s specific needs (e.g., launching a new feature).",
+        "kpis": [
+            "Sign-ups",
+            "Adoption rate",
+            "New customer acquisition"
+        ],
+        "rules": {
+            "is_spending_on_ads": true,
+            "rating": {
+                "$gte": 4.0
+            }
+        },
+        "strategies": [
+            {
+                "type": "Beta Program",
+                "description": "Encouraging early adopters to test new features or products in exchange for feedback.",
+                "example": "Join our beta program and get early access to our upcoming product updates."
+            },
+            {
+                "type": "Product-Specific Drip Campaigns",
+                "description": "A series of emails to educate users about a specific product feature or update.",
+                "example": "Learn how to maximize your ROI with our latest analytics dashboard feature."
+            }
+        ],
+        "questions": [
+            "What features need promotion, and to whom?",
+            "How can we position the product as a solution to specific pain points?",
+            "What KPIs should we track for product usage or adoption?",
+            "Are there new markets we need to penetrate?"
+        ],
+        "examples": [
+            "Achieve 5,000 sign-ups for a beta program within 6 weeks.",
+            "Promote new feature adoption to 40% of existing users.",
+            "Generate 1,500 new customers for a premium product tier."
+        ]
+    },
+    "Channel-Specific": {
+        "step": 7,
+        "description": "Optimize marketing efforts on individual channels.",
+        "kpis": [
+            "Followers",
+            "Engagement rate",
+            "Revenue generated"
+        ],
+        "rules": {
+            "channel_performance": {
+                "best": [
+                    "Instagram",
+                    "LinkedIn"
+                ]
+            },
+            "rating": {
+                "$gte": 4.0
+            }
+        },
+        "strategies": [
+            {
+                "type": "Influencer Partnerships",
+                "description": "Collaborating with influencers who align with our brand and target audience.",
+                "example": "Partner with [influencer] to promote our services to their audience."
+            },
+            {
+                "type": "Channel-Specific Campaigns",
+                "description": "Tailoring campaigns to specific platforms like LinkedIn, Instagram, or YouTube.",
+                "example": "Boost engagement on Instagram with a series of reels showcasing our latest product."
+            }
+        ],
+        "questions": [
+            "What channels are performing best for us?",
+            "Are there new channels we should explore?",
+            "What type of content resonates most with our audience on each platform?",
+            "How can we optimize underperforming channels?"
+        ],
+        "examples": [
+            "Grow LinkedIn followers by 10,000 in Q1.",
+            "Increase Instagram engagement rate to 5% within 3 months.",
+            "Boost YouTube video views to 50,000 for the next product launch."
+        ]
+    },
+    "Seasonal": {
+        "step": 8,
+        "description": "Leverage events, holidays, or limited-time offers.",
+        "kpis": [
+            "Revenue",
+            "Sign-ups",
+            "Engagement"
+        ],
+        "rules": {
+            "seasonal_events": [
+                "Black Friday",
+                "Christmas",
+                "Summer Sale"
+            ]
+        },
+        "strategies": [
+            {
+                "type": "Seasonal Campaigns",
+                "description": "Creating campaigns around specific events or holidays to drive sales or sign-ups.",
+                "example": "Launch a Black Friday sale to boost revenue and customer acquisition."
+            }
+        ],
+        "questions": [
+            "Are there any upcoming holidays or events we can target?",
+            "What type of seasonal offers resonate with our audience?",
+            "How can we maximize urgency for a campaign?",
+            "What metrics will define the success of the campaign?"
+        ],
+        "examples": [
+            "Generate $50,000 in revenue from Black Friday promotions.",
+            "Achieve 25% more sign-ups during a summer sale campaign."
+        ]
+    },
+    "Competitive": {
+        "step": 9,
+        "description": "Improve market positioning relative to competitors.",
+        "kpis": [
+            "Market share",
+            "Customer acquisition",
+            "Brand awareness"
+        ],
+        "rules": {
+            "competitor_tracking_enabled": true
+        },
+        "strategies": [
+            {
+                "type": "Competitor Analysis",
+                "description": "Analyzing competitors' strategies and market positioning to inform our own.",
+                "example": "We’ve outperformed [competitor] in [metric] by 20% this quarter."
+            }
+        ],
+        "questions": [
+            "How does our product/service compare to competitors?",
+            "Are there gaps in the market that we can fill?",
+            "What areas are competitors outperforming us in?",
+            "How can we showcase differentiation?"
+        ],
+        "examples": [
+            "Increase share of voice (SOV) by 15% in industry-related keywords.",
+            "Capture 20% of competitor’s customer base using a targeted campaign.",
+            "Outperform competitor’s ad engagement rates by 25%."
+        ]
+    },
+    "Revenue": {
+        "step": 10,
+        "description": "Tie marketing efforts directly to business revenue or profitability.",
+        "kpis": [
+            "Revenue",
+            "ROI",
+            "Cost-per-acquisition (CPA)"
+        ],
+        "rules": {
+            "monthly_revenue_target": {
+                "$gte": 10000
+            }
+        },
+        "strategies": [
+            {
+                "type": "ROI-Focused Campaigns",
+                "description": "Aligning marketing spend with revenue goals to maximize ROI.",
+                "example": "We’ve achieved a 5x return on ad spend (ROAS) for digital ads this quarter."
+            },
+            {
+                "type": "High-Value Lead Campaigns",
+                "description": "Prioritizing and targeting leads with the highest potential revenue impact.",
+                "example": "Schedule a demo with high-value leads in [location] for tailored solutions."
+            }
+        ],
+        "questions": [
+            "How much revenue do we want to generate from marketing efforts?",
+            "What’s the target ROI for each campaign?",
+            "How can we optimize marketing spend to maximize profitability?",
+            "What metrics will define the success of the campaign?"
+        ],
+        "examples": [
+            "Generate $200,000 in revenue from paid campaigns in Q2.",
+            "Achieve a 5x return on ad spend (ROAS) for digital ads.",
+            "Reduce cost-per-acquisition (CPA) by 20% through ad optimization."
+        ]
+    }
+}

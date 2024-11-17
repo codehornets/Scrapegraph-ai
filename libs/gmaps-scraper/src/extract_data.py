@@ -1,13 +1,17 @@
 import re as rex
 import json
 from datetime import datetime
-from src.scraper_utils import create_search_link
 from urllib.parse import urlparse, urlunparse
+
+from backend.core import bt
+
+from .scraper_utils import create_search_link
 from .utils import unicode_to_ascii
-from botasaurus import bt
+
 
 def get_image_id(img):
     return bt.extract_path_from_link(img).split("/")[-1].split("=")[0]
+
 
 def change_image_to_high_res(img):
     if img:
@@ -19,8 +23,10 @@ def change_image_to_high_res(img):
 
 
 def write_temp_json(data):
-    from botasaurus import bt
+    from backend.core import bt
+
     bt.write_temp_json(data)
+
 
 def toiso(date):
     return date.isoformat()
@@ -29,11 +35,7 @@ def toiso(date):
 def extract_path_from_link(link):
     if isinstance(link, str):
         parsed = urlparse(link)
-        return str(
-            urlunparse(
-                ("", "", parsed.path, "", "", "")
-            )
-        )
+        return str(urlunparse(("", "", parsed.path, "", "", "")))
 
 
 def get_can_claim(data):
@@ -55,7 +57,7 @@ def get_can_claim(data):
 
 def convert_timestamp_to_iso_date(timestamp):
     # Convert from microseconds to milliseconds
-    milliseconds = int(timestamp/1000) 
+    milliseconds = int(timestamp / 1000)
     # Create a new Date object
     date = datetime.utcfromtimestamp(milliseconds)
     # Return the date in the specified format
@@ -362,8 +364,8 @@ def get_menu(data):
 def get_review_images(data):
     ls = []
     for x in data:
-            img = safe_get(x, 1,6,0)
-            ls.append(change_image_to_high_res(img))
+        img = safe_get(x, 1, 6, 0)
+        ls.append(change_image_to_high_res(img))
     return ls
 
 
@@ -399,13 +401,12 @@ def get_user_reviews(data):
     rvs = safe_get(data, 6, 175, 9, 0, 0) or []
     ls = []
 
-    
     for element in rvs:
         element = element[0]
         # todo when
         when, rating, description = (
-            safe_get(element,1, 6),
-            safe_get(element,2, 0, 0),
+            safe_get(element, 1, 6),
+            safe_get(element, 2, 0, 0),
             safe_get(element, 2, 15, 0, 0),
         )
         # ChdDSUhNMG9nS0VJQ0FnSUNKeHJUYzJnRRAB
@@ -414,58 +415,57 @@ def get_user_reviews(data):
 
         # 2, 15, 1, 0
         review_translated_text = safe_get(element, 2, 15, 1, 0)
-        #v 3 14 0 1
-        response_from_owner_translated_text = safe_get(element, 3 ,14, 1, 0) or None
-        #v 3 14 0 0
-        response_from_owner_text = safe_get(element, 3 ,14, 0, 0) or None
+        # v 3 14 0 1
+        response_from_owner_translated_text = safe_get(element, 3, 14, 1, 0) or None
+        # v 3 14 0 0
+        response_from_owner_text = safe_get(element, 3, 14, 0, 0) or None
 
-        published_at_date = safe_get(element, 1,2) or safe_get(element, 1,3) or None
+        published_at_date = safe_get(element, 1, 2) or safe_get(element, 1, 3) or None
         if published_at_date:
-            published_at_date = convert_timestamp_to_iso_date(published_at_date/1000)
+            published_at_date = convert_timestamp_to_iso_date(published_at_date / 1000)
 
-        
-        response_from_owner_ago = safe_get(element, 3, 3) or safe_get(element, 3, 4) or None
-        response_from_owner_date = (
-            safe_get(element, 3,1) or safe_get(element, 3,2) or None
+        response_from_owner_ago = (
+            safe_get(element, 3, 3) or safe_get(element, 3, 4) or None
         )
-        
+        response_from_owner_date = (
+            safe_get(element, 3, 1) or safe_get(element, 3, 2) or None
+        )
+
         if response_from_owner_date:
             response_from_owner_date = convert_timestamp_to_iso_date(
-                response_from_owner_date/1000
+                response_from_owner_date / 1000
             )
-        
-        
 
-        total_number_of_reviews_by_reviewer = safe_get(element, 1,4, 0, 1)
-        total_number_of_photos_by_reviewer = safe_get(element, 1,4, 0, 2)
-        review_likes_count = safe_get(element, 4,1)
+        total_number_of_reviews_by_reviewer = safe_get(element, 1, 4, 0, 1)
+        total_number_of_photos_by_reviewer = safe_get(element, 1, 4, 0, 2)
+        review_likes_count = safe_get(element, 4, 1)
 
-        is_local_guide = safe_get(element, 1, 4, 0, 12,0)
+        is_local_guide = safe_get(element, 1, 4, 0, 12, 0)
         # Flaky in nature works only for english language
         if is_local_guide is not None:
             is_local_guide = "local " in is_local_guide.lower()
         else:
             is_local_guide = False
-        
+
         item = {
-                "review_id": review_id,
-                "rating": rating,
-                "review_text": description,
-                "published_at": when,
-                "published_at_date": published_at_date,
-                "response_from_owner_text": response_from_owner_text,
-                "response_from_owner_ago": response_from_owner_ago,
-                "response_from_owner_date": response_from_owner_date,
-                "review_likes_count": review_likes_count,
-                "total_number_of_reviews_by_reviewer": total_number_of_reviews_by_reviewer,
-                "total_number_of_photos_by_reviewer": total_number_of_photos_by_reviewer,
-                "is_local_guide": is_local_guide,
-                "review_translated_text": review_translated_text,
-                "response_from_owner_translated_text": response_from_owner_translated_text,
-                "review_photos": images,
-            }
+            "review_id": review_id,
+            "rating": rating,
+            "review_text": description,
+            "published_at": when,
+            "published_at_date": published_at_date,
+            "response_from_owner_text": response_from_owner_text,
+            "response_from_owner_ago": response_from_owner_ago,
+            "response_from_owner_date": response_from_owner_date,
+            "review_likes_count": review_likes_count,
+            "total_number_of_reviews_by_reviewer": total_number_of_reviews_by_reviewer,
+            "total_number_of_photos_by_reviewer": total_number_of_photos_by_reviewer,
+            "is_local_guide": is_local_guide,
+            "review_translated_text": review_translated_text,
+            "response_from_owner_translated_text": response_from_owner_translated_text,
+            "review_photos": images,
+        }
         ls.append(
-            item, 
+            item,
         )
     return ls
 
@@ -519,19 +519,19 @@ def get_phone(data):
 
 def check_for_closed_items(test):
     # spanish english
-    if "cerrado" in test or "closed" in test :
-      return True
+    if "cerrado" in test or "closed" in test:
+        return True
     # french
     if test.startswith("ferme"):
-          return True
-        
+        return True
+
     return False
 
 
 def get_is_temporarily_closed(data, status):
-    if isinstance(status,str):
-      if check_for_closed_items(unicode_to_ascii(status).lower()):
-          return True
+    if isinstance(status, str):
+        if check_for_closed_items(unicode_to_ascii(status).lower()):
+            return True
 
     items = safe_get(data, 6, 96, 5)
     if items is not None:
@@ -544,15 +544,18 @@ def get_is_temporarily_closed(data, status):
         pass
     return False
 
+
 closed_items_langs = [
-                      "closed", 
-                      "cerrado", # es
-                      "ferme", # fr
-                      ]
+    "closed",
+    "cerrado",  # es
+    "ferme",  # fr
+]
+
+
 def get_is_permanently_closed(data):
     it = safe_get(data, 6, 88, 0)
-    return isinstance(it,str) and unicode_to_ascii(it).lower() in closed_items_langs
-    
+    return isinstance(it, str) and unicode_to_ascii(it).lower() in closed_items_langs
+
 
 def get_price_range(data):
     rs = safe_get(data, 6, 4, 2)
@@ -566,7 +569,7 @@ def get_title(data):
 
 
 def get_address(data):
-    return safe_get(data, 6, 39) or safe_get(data, 6, 37,0,0,17,0)
+    return safe_get(data, 6, 39) or safe_get(data, 6, 37, 0, 0, 17, 0)
 
 
 def get_website(data):
@@ -769,6 +772,7 @@ def perform_extract_possible_map_link(input_str):
     data = parse_extract_possible_map_link(input_str)
     return safe_get(data, 6, 27) or safe_get(data, 0, 1, 0, 14, 27)
 
+
 def extract_data(input_str, link):
     data = parse(input_str)
 
@@ -780,7 +784,7 @@ def extract_data(input_str, link):
     images = get_images(data)
     description = get_description(data)
     status = get_open_state(data)
-    is_temporarily_closed = get_is_temporarily_closed(data,status)
+    is_temporarily_closed = get_is_temporarily_closed(data, status)
     is_permanently_closed = get_is_permanently_closed(data)
     if is_permanently_closed:
         is_temporarily_closed = True
@@ -826,13 +830,13 @@ def extract_data(input_str, link):
     most_popular_times = extract_most_popular_times(popular_times)
     is_claimed = get_can_claim(data)
     user_reviews = get_user_reviews(data)
-    
+
     # from botasaurus import bt
     # bt.write_temp_json(data)
     # bt.prompt()
     return {
-        "is_temporarily_closed":is_temporarily_closed,
-        "is_permanently_closed":is_permanently_closed,
+        "is_temporarily_closed": is_temporarily_closed,
+        "is_permanently_closed": is_permanently_closed,
         "place_id": place_id,
         "name": title,
         "description": description,

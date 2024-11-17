@@ -9,7 +9,7 @@ from termcolor import colored
 from src.config.settings import SettingService
 from src.services.keywords.classifier import IntentClassifier
 from src.services.caches import CacheService
-from src.services.preprocessing import TextProcessor
+from src.services.sanitizers import TextSanitizerService
 
 dotenv.load_dotenv()
 
@@ -18,11 +18,13 @@ class SerpService:
     def __init__(self, settings: SettingService, cache_service: CacheService):
         self.settings = settings
         self.cache_service = cache_service
-        self.text_processor = TextProcessor(
+        self.text_sanitizer_service = TextSanitizerService(
             settings=self.settings, cache_service=self.cache_service
         )
-        self.classifier = IntentClassifier(settings=self.settings)
-        self.text_processor.download_nltk_data()
+        self.classifier = IntentClassifier(
+            settings=self.settings, cache_service=self.cache_service
+        )
+        self.text_sanitizer_service.download_nltk_data()
 
     def analyze_search_intents(
         self, keywords: List[str], locations: List[str]
@@ -142,7 +144,7 @@ class SerpService:
             for _, row in serp_data.iterrows()
             if "title" in row and "snippet" in row
         ]
-        tokenized_corpus = self.text_processor.process_text_batch(corpus)
+        tokenized_corpus = self.text_sanitizer_service.process_text_batch(corpus)
 
         corpus_string = ""
         for item in tokenized_corpus:
@@ -156,7 +158,7 @@ class SerpService:
         for index, row in serp_data.iterrows():
             if "title" in row and "snippet" in row:
                 competitor_corpus = f"{row['title']} {row['snippet']}"
-                competitor_tokenized_corpus = self.text_processor.process_text(
+                competitor_tokenized_corpus = self.text_sanitizer_service.process_text(
                     competitor_corpus
                 )
                 competitor_string_corpus = " ".join(

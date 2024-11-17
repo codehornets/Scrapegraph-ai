@@ -1,8 +1,8 @@
-from unidecode import unidecode
 import regex as re
-from dateutils import relativedelta
 from datetime import datetime
 
+from dateutils import relativedelta
+from unidecode import unidecode
 
 relative_date_maps = {
     "pt-br": {
@@ -48,7 +48,6 @@ relative_date_maps = {
 }
 
 
-
 translated_text_maps = {
     "pt-br": {
         "flag": "Tradução do Google",
@@ -69,14 +68,14 @@ def parse_relative_date(relative_date, retrieval_date, hl="en"):
     unidecoded_text = unidecode(relative_date).lower().strip()
     text = unidecoded_text
     # Transforma {"um","uma"} no número 1
-    
+
     text = re.sub(relative_date_maps[hl]["one_regex"], "1", text)
     # Remove terminação "atrás"
-    
+
     text = re.sub(relative_date_maps[hl]["ago_regex"], "", text)
 
     number, time_unit = text.split(" ")
-    
+
     try:
         number = float(number)
     except:
@@ -86,5 +85,7 @@ def parse_relative_date(relative_date, retrieval_date, hl="en"):
             raise
     kwargs = {relative_date_maps[hl]["time_unit"][time_unit]: number}
 
-    review_date = datetime.strptime(retrieval_date, '%Y-%m-%d %H:%M:%S.%f')    - relativedelta(**kwargs)
+    review_date = datetime.strptime(
+        retrieval_date, "%Y-%m-%d %H:%M:%S.%f"
+    ) - relativedelta(**kwargs)
     return str(review_date)
