@@ -19,7 +19,7 @@ dotenv.load_dotenv()
 app_env = os.getenv("APP_ENV", "development")
 
 
-class BusinessProfileService:
+class ProfilingService:
     def __init__(
         self,
         setting_service: SettingService,
