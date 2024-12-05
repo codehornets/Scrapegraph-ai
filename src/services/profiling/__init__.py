@@ -35,18 +35,19 @@ class ProfilingService:
 
         self.user_agent_rotator = UserAgentRotator(get_user_agents())
 
-    def generate_profile(self) -> Optional[Dict[str, Any]]:
+    async def generate_profile(self) -> Optional[Dict[str, Any]]:
         """Extracts business profile data based on the app environment."""
         try:
-            if app_env == "production":
+            if app_env == "debug":
+                data = get_product_hunt_business_profile()
+            else:
                 scraper = SmartScraperMultiGraph(
                     source=self.extract_navbar_footer_links(),
                     prompt=self.prompt,
                     config=self.setting_service.scrapegraphai_config,
                 )
-                data = scraper.run()
-            else:
-                data = get_product_hunt_business_profile()
+                data = await scraper.run()
+
             if data and isinstance(data, list):
                 data = data[0]
             if data:
@@ -58,10 +59,6 @@ class ProfilingService:
             return None
 
     def extract_navbar_footer_links(self) -> List[str]:
-        """Extracts all unique links from the navbar and footer of the provided source URL."""
-        if not self.source:
-            raise ValueError("Source URL list cannot be empty.")
-
         base_url = self.website_url
         user_agent = self.user_agent_rotator.get()
         headers = {"User-Agent": str(user_agent)}
